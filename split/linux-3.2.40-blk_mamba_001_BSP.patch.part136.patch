@@ -1,0 +1,21 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_drivers_lsp/mv_audio_soc/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_drivers_lsp/mv_audio_soc/Makefile	2013-04-12 17:28:36.000000000 -0700
+@@ -0,0 +1,18 @@
++#
++# Makefile for the Marvell Audio ALSA Device Driver
++#
++ifneq ($(MACHINE),)
++include $(srctree)/$(MACHINE)/config/mvRules.mk
++endif
++
++obj-$(CONFIG_SND_MRVL_AUDIO) += snd-mv88fx-soc.o
++obj-$(CONFIG_SND_MRVL_AUDIO) += snd-mv88fx-i2s-soc.o
++obj-$(CONFIG_SND_MRVL_AUDIO) += snd-mv88fx-pcm-soc.o
++
++snd-mv88fx-i2s-soc-objs               += mv88fx-i2s.o
++snd-mv88fx-pcm-soc-objs		      += mv88fx-pcm.o
++
++#snd-mv88fx-soc-objs                  += cs42l51-hal.o
++snd-mv88fx-soc-objs                  += mv88fx.o
++
++

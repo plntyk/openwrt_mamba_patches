@@ -1,0 +1,14 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/Makefile	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,11 @@
++ifneq ($(MACHINE),)
++include $(srctree)/$(MACHINE)/config/mvRules.mk
++endif
++
++# This will never compile, because DUMMY will never by defined.
++obj-$(DUMMY)   				:= dummy.o
++obj-$(CONFIG_SHEEVA_DEEP_IDLE)		+= cpuidle.o armada_suspend.o suspend.o
++obj-$(CONFIG_HOTPLUG_CPU)		+= hotplug.o
++obj-$(CONFIG_PLAT_ARMADA)		+= pmu.o
++obj-$(CONFIG_PCI_MSI)			+= msi.o
++obj-$(CONFIG_CPU_FREQ_ARMADA_XP)	+= cpufreq.o

@@ -1,0 +1,27 @@
+--- linux-3.2.40.orig/arch/arm/mach-armadaxp/include/mach/debug-macro.S	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/mach-armadaxp/include/mach/debug-macro.S	2013-04-13 23:49:36.000000000 -0700
+@@ -0,0 +1,24 @@
++/*
++ * debug-macro.S
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++*/
++
++#include <mach/armadaxp.h>
++
++	
++	.macro  addruart, rp, rv, tmp
++	ldr     \rp, =INTER_REGS_PHYS_BASE
++	ldr	\rv, =INTER_REGS_BASE
++	orr     \rp, \rp, #0x00012000
++        orr     \rv, \rv, #0x00012000
++#ifdef CONFIG_MV_UART_PORT
++	orr     \rp, \rp, #0x100 * CONFIG_MV_UART_PORT
++        orr     \rv, \rv, #0x100 * CONFIG_MV_UART_PORT
++#endif
++	.endm
++
++#define UART_SHIFT	2
++#include <asm/hardware/debug-8250.S>

@@ -1,0 +1,17 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/tools/setenv	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/tools/setenv	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,14 @@
++declare -x DSDT_USER_BASE=/home/xudy/dsdt/DSDT_3.2_internal/switch
++declare -x DSDT_PROJ_NAME=qdDrv
++declare -x DSDT_TOOL_DIR=$DSDT_USER_BASE/tools
++declare -x RELEASE=YES
++declare -x OS_RUN=LINUX
++declare -x MAD_USER_BASE=$DSDT_USER_BASE/../phy
++declare -x MAD_PROJ_NAME=madDrv
++declare -x MAD_TOOL_DIR=$MAD_USER_BASE/tools
++declare -x USER_API_NAME=
++declare -x USER_NAME=
++declare -x DSP_VCT=FALSE
++declare -x VCT_PENDING=FALSE
++#declare -x DSDT_USE_MAD=FALSE
++declare -x DSDT_USE_MAD=TRUE

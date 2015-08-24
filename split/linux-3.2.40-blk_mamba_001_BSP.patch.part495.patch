@@ -1,0 +1,5 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt/sample/README	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt/sample/README	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,2 @@
++This directory includes sample code that demonstrats how to use the API of
++the DSDT Suite. There is a readme.txt file in each of the subdirectories.

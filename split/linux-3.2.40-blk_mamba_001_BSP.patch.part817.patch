@@ -1,0 +1,10 @@
+--- linux-3.2.40.orig/net/core/Makefile	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/core/Makefile	2013-04-13 23:50:18.000000000 -0700
+@@ -19,3 +19,7 @@
+ obj-$(CONFIG_TRACEPOINTS) += net-traces.o
+ obj-$(CONFIG_NET_DROP_MONITOR) += drop_monitor.o
+ obj-$(CONFIG_NETWORK_PHY_TIMESTAMPING) += timestamping.o
++
++ifeq ($(CONFIG_MV_ETH_NFP),y)
++obj-y += mv_nfp.o
++endif

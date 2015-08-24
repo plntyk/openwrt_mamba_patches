@@ -1,0 +1,15 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt/sample/CrossChipTrunk/readme.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt/sample/CrossChipTrunk/readme.txt	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,12 @@
++========================================================================
++		Setup for Cross Chip Trunk
++========================================================================
++
++This sample shows how to setup the Cross Chip Trunk with the following
++assumptions.
++	Assumption 1: Device ID, Cascading Port, CPU Port, and Interswitch Port are
++		already set properly. For more information, please refer to the
++		sample/MultiDevice/msApiInit.c
++
++	Assumption 2: Port 0,1,2 of Device 0 and Port 0 of Device 1 are member of a
++		trunk with Trunk ID, 1.

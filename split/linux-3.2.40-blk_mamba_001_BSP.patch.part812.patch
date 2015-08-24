@@ -1,0 +1,45 @@
+--- linux-3.2.40.orig/net/bridge/br_if.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/bridge/br_if.c	2013-04-13 23:50:18.000000000 -0700
+@@ -22,6 +22,7 @@
+ #include <linux/rtnetlink.h>
+ #include <linux/if_ether.h>
+ #include <linux/slab.h>
++#include <linux/mv_nfp.h>
+ #include <net/sock.h>
+ 
+ #include "br_private.h"
+@@ -167,11 +168,22 @@
+ 	struct net_bridge_port *p, *n;
+ 
+ 	list_for_each_entry_safe(p, n, &br->port_list, list) {
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if (nfp_mgr_p->nfp_hook_br_port_del)
++		nfp_mgr_p->nfp_hook_br_port_del(br->dev->ifindex, p->dev->ifindex);
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 		del_nbp(p);
+ 	}
+ 
+ 	del_timer_sync(&br->gc_timer);
+ 
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if (nfp_mgr_p->nfp_hook_br_del)
++		nfp_mgr_p->nfp_hook_br_del(br->dev->ifindex);
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	br_sysfs_delbr(br->dev);
+ 	unregister_netdevice_queue(br->dev, head);
+ }
+@@ -426,6 +438,11 @@
+ 	if (!p || p->br != br)
+ 		return -EINVAL;
+ 
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if (nfp_mgr_p->nfp_hook_br_port_del)
++		nfp_mgr_p->nfp_hook_br_port_del(br->dev->ifindex, p->dev->ifindex);
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	del_nbp(p);
+ 
+ 	spin_lock_bh(&br->lock);

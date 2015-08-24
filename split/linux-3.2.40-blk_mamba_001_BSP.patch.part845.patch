@@ -1,0 +1,10 @@
+--- linux-3.2.40.orig/net/socket.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/socket.c	2013-04-13 23:50:18.000000000 -0700
+@@ -1750,6 +1750,7 @@
+ 	msg.msg_controllen = 0;
+ 	msg.msg_iovlen = 1;
+ 	msg.msg_iov = &iov;
++	msg.msg_flags = 0;
+ 	iov.iov_len = size;
+ 	iov.iov_base = ubuf;
+ 	msg.msg_name = (struct sockaddr *)&address;

@@ -1,0 +1,28 @@
+--- linux-3.2.40.orig/net/ipv6/route.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/ipv6/route.c	2013-04-13 23:50:18.000000000 -0700
+@@ -251,6 +251,10 @@
+ 		memset(&rt->rt6i_table, 0,
+ 			sizeof(*rt) - sizeof(struct dst_entry));
+ 
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	rt->nfp = false;
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	return rt;
+ }
+ 
+@@ -832,6 +836,14 @@
+ 
+ 	dst_hold(&rt->dst);
+ 	if (nrt) {
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++			if ((rt->rt6i_flags & RTF_CACHE)) {
++				ipv6_addr_copy(&rt->rt6i_src.addr, &fl6->saddr);
++				rt->rt6i_src.plen = 128;
++				rt->rt6i_iifindex = fl6->flowi6_iif;
++			}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 		err = ip6_ins_rt(nrt);
+ 		if (!err)
+ 			goto out2;

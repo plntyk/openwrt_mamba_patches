@@ -1,0 +1,12 @@
+--- linux-3.2.40.orig/include/net/neighbour.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/net/neighbour.h	2013-04-13 23:50:16.000000000 -0700
+@@ -113,6 +113,9 @@
+ 	const struct neigh_ops	*ops;
+ 	struct rcu_head		rcu;
+ 	struct net_device	*dev;
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	bool 			nfp;
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
+ 	u8			primary_key[0];
+ };
+ 

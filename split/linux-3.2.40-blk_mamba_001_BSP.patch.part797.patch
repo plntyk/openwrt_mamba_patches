@@ -1,0 +1,47 @@
+--- linux-3.2.40.orig/include/net/netfilter/nf_conntrack.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/net/netfilter/nf_conntrack.h	2013-04-13 23:50:16.000000000 -0700
+@@ -128,6 +128,21 @@
+ 	u_int32_t secmark;
+ #endif
+ 
++#if defined(CONFIG_NETFILTER_XT_MATCH_LAYER7) || \
++    defined(CONFIG_NETFILTER_XT_MATCH_LAYER7_MODULE)
++	struct {
++		/*
++		 * e.g. "http". NULL before decision. "unknown" after decision
++		 * if no match.
++		 */
++		char *app_proto;
++		/*
++		 * application layer data so far. NULL after match decision.
++		 */
++		char *app_data;
++		unsigned int app_data_len;
++	} layer7;
++#endif
+ 	/* Extensions */
+ 	struct nf_ct_ext *ext;
+ #ifdef CONFIG_NET_NS
+@@ -321,6 +336,13 @@
+ extern unsigned int nf_conntrack_hash_rnd;
+ void init_nf_conntrack_hash_rnd(void);
+ 
++#ifdef CONFIG_MV_LINUX_COUNTERS_DISABLE
++
++#define NF_CT_STAT_INC(net, count)
++#define NF_CT_STAT_INC_ATOMIC(net, count)
++
++#else
++
+ #define NF_CT_STAT_INC(net, count)	\
+ 	__this_cpu_inc((net)->ct.stat->count)
+ #define NF_CT_STAT_INC_ATOMIC(net, count)		\
+@@ -330,6 +352,8 @@
+ 	local_bh_enable();				\
+ } while (0)
+ 
++#endif /* CONFIG_MV_LINUX_COUNTERS_DISABLE */
++
+ #define MODULE_ALIAS_NFCT_HELPER(helper) \
+         MODULE_ALIAS("nfct-helper-" helper)
+ 

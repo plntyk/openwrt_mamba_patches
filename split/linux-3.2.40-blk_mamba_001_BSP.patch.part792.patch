@@ -1,0 +1,19 @@
+--- linux-3.2.40.orig/include/linux/socket.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/linux/socket.h	2013-04-13 23:50:14.000000000 -0700
+@@ -266,6 +266,8 @@
+ #define MSG_MORE	0x8000	/* Sender will send more */
+ #define MSG_WAITFORONE	0x10000	/* recvmmsg(): block until 1+ packets avail */
+ #define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
++#define MSG_KERNSPACE	0x40000
++#define MSG_NOCATCHSIG	0x80000
+ #define MSG_EOF         MSG_FIN
+ 
+ #define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exit for file
+@@ -332,6 +334,7 @@
+ 			     int offset, int len);
+ extern int move_addr_to_kernel(void __user *uaddr, int ulen, struct sockaddr *kaddr);
+ extern int put_cmsg(struct msghdr*, int level, int type, int len, void *data);
++extern void memcpy_tokerneliovec(struct iovec *iov, unsigned char *kdata, int len);
+ 
+ struct timespec;
+ 

@@ -1,0 +1,13 @@
+--- linux-3.2.40.orig/net/bridge/br_private.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/bridge/br_private.h	2013-04-13 23:50:18.000000000 -0700
+@@ -74,6 +74,10 @@
+ 	mac_addr			addr;
+ 	unsigned char			is_local;
+ 	unsigned char			is_static;
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	bool 			nfp;
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
+ };
+ 
+ struct net_bridge_port_group {

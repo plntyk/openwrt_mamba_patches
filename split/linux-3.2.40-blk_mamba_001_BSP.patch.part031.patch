@@ -1,0 +1,19 @@
+--- linux-3.2.40.orig/arch/arm/mach-armadaxp/include/mach/dma.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/mach-armadaxp/include/mach/dma.h	2013-04-12 17:28:36.000000000 -0700
+@@ -0,0 +1,16 @@
++/*
++ * DaVinci DMA definitions
++ *
++ * Author: Kevin Hilman, MontaVista Software, Inc. <source@mvista.com>
++ *
++ * 2007 (c) MontaVista Software, Inc. This file is licensed under
++ * the terms of the GNU General Public License version 2. This program
++ * is licensed "as is" without any warranty of any kind, whether express
++ * or implied.
++ */
++#ifndef __ASM_ARCH_DMA_H
++#define __ASM_ARCH_DMA_H
++
++#define MAX_DMA_ADDRESS			0xffffffff
++
++#endif /* __ASM_ARCH_DMA_H */

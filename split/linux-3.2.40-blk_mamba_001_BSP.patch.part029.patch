@@ -1,0 +1,10 @@
+--- linux-3.2.40.orig/arch/arm/mach-armadaxp/include/mach/clkdev.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/mach-armadaxp/include/mach/clkdev.h	2013-04-12 17:28:36.000000000 -0700
+@@ -0,0 +1,7 @@
++#ifndef __ASM_MACH_CLKDEV_H
++#define __ASM_MACH_CLKDEV_H
++
++#define __clk_get(clk) ({ 1; })
++#define __clk_put(clk) do { } while (0)
++
++#endif

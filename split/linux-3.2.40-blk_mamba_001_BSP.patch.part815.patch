@@ -1,0 +1,69 @@
+--- linux-3.2.40.orig/net/core/dev.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/core/dev.c	2013-04-13 23:50:18.000000000 -0700
+@@ -137,9 +137,12 @@
+ #include <linux/if_pppox.h>
+ #include <linux/ppp_defs.h>
+ #include <linux/net_tstamp.h>
+-
+ #include "net-sysfs.h"
+ 
++#if defined(CONFIG_MV_ETH_NFP)
++#include <linux/mv_nfp.h>
++#endif /* CONFIG_MV_ETH_NFP */
++
+ /* Instead of increasing this, you should create a hash table. */
+ #define MAX_GRO_SKBS 8
+ 
+@@ -3217,6 +3220,23 @@
+ }
+ EXPORT_SYMBOL_GPL(netdev_rx_handler_unregister);
+ 
++#ifdef CONFIG_MV_ETH_NFP_EXT
++static struct sk_buff *handle_nfp_extrcv(struct sk_buff *skb, struct net_device *dev)
++{
++	MV_EXT_PKT_INFO *pktInfo;
++
++	pktInfo = (MV_EXT_PKT_INFO *)&skb->cb;
++	if (pktInfo->flags == 0)
++		pktInfo = NULL;
++
++	if (!mv_eth_nfp_ext(skb->dev, skb, pktInfo)) {
++		/* packet processed by NFP */
++		return NULL;
++	}
++	return skb;
++}
++#endif /* CONFIG_MV_ETH_NFP_EXT */
++
+ static int __netif_receive_skb(struct sk_buff *skb)
+ {
+ 	struct packet_type *ptype, *pt_prev;
+@@ -3265,6 +3285,12 @@
+ 	}
+ #endif
+ 
++#ifdef CONFIG_MV_ETH_NFP_EXT
++	skb = handle_nfp_extrcv(skb, orig_dev);
++	if (!skb)
++		goto out;
++#endif /* CONFIG_MV_ETH_NFP_EXT */
++
+ 	list_for_each_entry_rcu(ptype, &ptype_all, list) {
+ 		if (!ptype->dev || ptype->dev == skb->dev) {
+ 			if (pt_prev)
+@@ -6652,6 +6678,15 @@
+ 	dst_init();
+ 	dev_mcast_init();
+ 	rc = 0;
++
++#if defined(CONFIG_MV_ETH_NFP)
++	nfp_core_ops_init();
++#endif /* CONFIG_MV_ETH_NFP */
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	nfp_hook_ops_init();
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ out:
+ 	return rc;
+ }

@@ -1,0 +1,16 @@
+--- linux-3.2.40.orig/include/linux/splice.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/linux/splice.h	2013-04-13 23:50:14.000000000 -0700
+@@ -58,6 +58,13 @@
+ 	void (*spd_release)(struct splice_pipe_desc *, unsigned int);
+ };
+ 
++struct recvfile_ctl_blk {
++	struct page *rv_page;
++	loff_t rv_pos;
++	size_t rv_count;
++	void *rv_fsdata;
++};
++
+ typedef int (splice_actor)(struct pipe_inode_info *, struct pipe_buffer *,
+ 			   struct splice_desc *);
+ typedef int (splice_direct_actor)(struct pipe_inode_info *,

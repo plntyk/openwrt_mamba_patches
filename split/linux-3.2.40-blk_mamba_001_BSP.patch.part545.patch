@@ -1,0 +1,51 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt/src/msapi/makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt/src/msapi/makefile	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,48 @@
++# Source files in this directory
++TARGET =
++CSOURCES	= gtBrgFdb.c gtBrgStp.c gtBrgVlan.c \
++			gtEvents.c \
++			gtPortCtrl.c gtPortStat.c gtPortStatus.c \
++			gtQosMap.c gtPIRL.c	\
++			gtPhyCtrl.c gtPhyInt.c \
++			gtSysConfig.c gtSysCtrl.c gtVersion.c gtUtils.c \
++			gtBrgVtu.c gtPortRmon.c gtSysStatus.c \
++			gtPortRateCtrl.c gtPortPav.c gtVct.c gtAdvVct.c gtPCSCtrl.c \
++			gtBrgStu.c gtCCPVT.c gtPIRL2.c gtPolicy.c \
++			gtPriTable.c gtWeight.c gtPTP.c gtPortLed.c gtMisc.c
++
++ASOURCES	=
++
++# Include common variable definitions
++ifeq ($(OS_RUN),VXWORKS)
++include $(DSDT_TOOL_DIR)\make.defs
++endif
++ifeq ($(OS_RUN),WIN32)
++include $(DSDT_TOOL_DIR)\makewce.defs
++endif
++ifeq ($(OS_RUN),LINUX)
++include $(DSDT_TOOL_DIR)/makelnx.defs
++endif
++
++# Add in extra stuffs
++EXTRA_INCLUDE	+=
++EXTRA_DEFINE	+=
++ADDED_CFLAGS	+=
++
++ifeq ($(DSDT_USE_MAD),TRUE)
++CSOURCES	+= gtPhyCtrl_mad.c gtPhyInt_mad.c gtVct_mad.c gtAdvVct_mad.c
++ADDED_CFLAGS	+= -DGT_USE_MAD
++endif
++
++# Include common build rules
++ifeq ($(OS_RUN),VXWORKS)
++include $(DSDT_TOOL_DIR)\make.rules
++endif
++ifeq ($(OS_RUN),WIN32)
++include $(DSDT_TOOL_DIR)\makewce.rules
++endif
++ifeq ($(OS_RUN),LINUX)
++include $(DSDT_TOOL_DIR)/makelnx.rules
++endif
++
++# end of file

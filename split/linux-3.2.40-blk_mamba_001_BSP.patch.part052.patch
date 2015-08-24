@@ -1,0 +1,12 @@
+--- linux-3.2.40.orig/arch/arm/mach-armadaxp/Makefile.boot	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/mach-armadaxp/Makefile.boot	2013-04-13 23:49:36.000000000 -0700
+@@ -0,0 +1,9 @@
++ifdef CONFIG_MV_AMP_ENABLE
++   zreladdr-y   := $(CONFIG_MV_ZREL_ADDR)
++params_phys-y   := $(CONFIG_MV_PARAM_PHYS)
++initrd_phys-y   := $(CONFIG_MV_INITRD_PHYS)
++else
++    zreladdr-y	:= 0x00008000
++ params_phys-y	:= 0x00000100
++ initrd_phys-y	:= 0x00800000
++endif

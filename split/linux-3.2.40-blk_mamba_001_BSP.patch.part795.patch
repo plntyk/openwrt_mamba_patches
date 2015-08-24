@@ -1,0 +1,25 @@
+--- linux-3.2.40.orig/include/net/ip6_fib.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/net/ip6_fib.h	2013-04-13 23:50:16.000000000 -0700
+@@ -1,8 +1,8 @@
+ /*
+- *	Linux INET6 implementation 
++ *	Linux INET6 implementation
+  *
+  *	Authors:
+- *	Pedro Roque		<roque@di.fc.ul.pt>	
++ *	Pedro Roque		<roque@di.fc.ul.pt>
+  *
+  *	This program is free software; you can redistribute it and/or
+  *      modify it under the terms of the GNU General Public License
+@@ -119,6 +119,11 @@
+ 	unsigned short			rt6i_nfheader_len;
+ 
+ 	u8				rt6i_protocol;
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	int				rt6i_iifindex;
++	bool 			nfp;
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
+ };
+ 
+ static inline struct inet6_dev *ip6_dst_idev(struct dst_entry *dst)

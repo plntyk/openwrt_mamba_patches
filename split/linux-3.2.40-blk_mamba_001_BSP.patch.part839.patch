@@ -1,0 +1,28 @@
+--- linux-3.2.40.orig/net/netfilter/nf_conntrack_standalone.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/netfilter/nf_conntrack_standalone.c	2013-04-13 23:50:18.000000000 -0700
+@@ -239,6 +239,25 @@
+ 	if (ct_show_delta_time(s, ct))
+ 		goto release;
+ 
++#if defined(CONFIG_NETFILTER_XT_MATCH_LAYER7) || defined(CONFIG_NETFILTER_XT_MATCH_LAYER7_MODULE)
++	if(ct->layer7.app_proto &&
++           seq_printf(s, "l7proto=%s ", ct->layer7.app_proto))
++		goto release;
++#endif
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if ((ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.nfp) && (ct->tuplehash[IP_CT_DIR_REPLY].tuple.nfp)) {
++		if (seq_printf(s, "[NFP (both)] "))
++			goto release;
++	} else if (ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple.nfp) {
++		if (seq_printf(s, "[NFP (orig)] "))
++			goto release;
++	} else if (ct->tuplehash[IP_CT_DIR_REPLY].tuple.nfp) {
++		if (seq_printf(s, "[NFP (reply)] "))
++			goto release;
++	}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	if (seq_printf(s, "use=%u\n", atomic_read(&ct->ct_general.use)))
+ 		goto release;
+ 

@@ -1,0 +1,17 @@
+--- linux-3.2.40.orig/arch/arm/mach-armadaxp/include/mach/hardware.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/mach-armadaxp/include/mach/hardware.h	2013-04-13 23:49:36.000000000 -0700
+@@ -0,0 +1,14 @@
++/*
++ * include/mach/hardware.h
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2.  This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++
++#ifndef __ASM_ARCH_HARDWARE_H
++#define __ASM_ARCH_HARDWARE_H
++
++#include "armadaxp.h"
++
++#endif

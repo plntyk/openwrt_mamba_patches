@@ -1,0 +1,12 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_drivers_lsp/mv_phone/test/Makefile	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_drivers_lsp/mv_phone/test/Makefile	2013-04-12 17:28:38.000000000 -0700
+@@ -0,0 +1,9 @@
++#
++# Makefile for the Marvell Phone Device Driver Test Module
++#
++#
++ifneq ($(MACHINE),)
++include $(srctree)/$(MACHINE)/config/mvRules.mk
++endif
++
++obj-$(CONFIG_TDM_DEV_TEST_SUPPORT) += tdm_dev.o

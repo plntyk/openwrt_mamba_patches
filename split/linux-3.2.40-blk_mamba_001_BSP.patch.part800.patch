@@ -1,0 +1,29 @@
+--- linux-3.2.40.orig/include/scsi/scsi_device.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/scsi/scsi_device.h	2013-04-13 23:50:16.000000000 -0700
+@@ -9,6 +9,10 @@
+ #include <scsi/scsi.h>
+ #include <linux/atomic.h>
+ 
++#ifdef CONFIG_MV_STAGGERED_SPINUP
++#include <scsi/scsi_spinup.h>
++#endif
++
+ struct request_queue;
+ struct scsi_cmnd;
+ struct scsi_lun;
+@@ -173,6 +177,15 @@
+ 
+ 	struct scsi_dh_data	*scsi_dh_data;
+ 	enum scsi_device_state sdev_state;
++
++#ifdef CONFIG_MV_STAGGERED_SPINUP
++	int ss_id;
++        enum scsi_device_power_state sdev_power_state;  /*Used to save the disk current power state*/
++        struct timer_list spinup_timeout;       /* Used to time out the spinup process when done. */
++        unsigned int standby_timeout_secs;
++        struct timer_list standby_timeout;      /* Used to time out the standby timeout command. */
++#endif
++
+ 	unsigned long		sdev_data[0];
+ } __attribute__((aligned(sizeof(unsigned long))));
+ 

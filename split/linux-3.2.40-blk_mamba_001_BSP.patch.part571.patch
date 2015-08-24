@@ -1,0 +1,33 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/Include/h/platform/platformDeps.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/Include/h/platform/platformDeps.h	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,30 @@
++#include <Copyright.h>
++
++/********************************************************************************
++* platformDeps.h
++*
++* DESCRIPTION:
++*       platform dependent definitions
++*
++* DEPENDENCIES:   Platform.
++*
++* FILE REVISION NUMBER:
++*
++*******************************************************************************/
++
++#ifndef __platformDepsh
++#define __platformDepsh
++
++#include <msApi.h>
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++GT_BOOL defaultMiiRead (unsigned int portNumber , unsigned int miiReg, unsigned int* value);
++GT_BOOL defaultMiiWrite (unsigned int portNumber , unsigned int miiReg, unsigned int value);
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif   /* platformDepsh */

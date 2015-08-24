@@ -1,0 +1,23 @@
+--- linux-3.2.40.orig/net/netfilter/nf_conntrack_proto_tcp.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/netfilter/nf_conntrack_proto_tcp.c	2013-04-13 23:50:18.000000000 -0700
+@@ -983,6 +983,20 @@
+ 		break;
+ 	}
+ 
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	/*
++	 * When connection is handled by NFP, we have to relax TCP tracking
++	 * rules as not all packets goes through Linux conntrack.
++	 */
++	{
++		struct nf_conntrack_tuple *tupleInverseDir;
++
++		tupleInverseDir	= &ct->tuplehash[!dir].tuple;
++		if ((tuple->nfp) || (tupleInverseDir->nfp))
++			goto in_window;
++	}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	if (!tcp_in_window(ct, &ct->proto.tcp, dir, index,
+ 			   skb, dataoff, th, pf)) {
+ 		spin_unlock_bh(&ct->lock);

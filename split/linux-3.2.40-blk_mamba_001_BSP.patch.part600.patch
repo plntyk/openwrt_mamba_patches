@@ -1,0 +1,16 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/sample/Interrupt/readme.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/sample/Interrupt/readme.txt	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,13 @@
++========================================================================
++		QuaterDeck Interrupt Handler called by BSP Interrupt Vector
++========================================================================
++
++This sample shows how to enable/disable QuaterDeck Interrupt, and how to
++handle each Interrupt.
++
++qdInt.c
++	sampleQDIntEnable() will enable all the interrupt supported by
++	QuaterDeck.
++	sampleQDIntDisable() will disable QuarterDeck Interrupt.
++	sampleQDIntVector() will show how BSP interrupt service routine can
++	deal with QuarterDeck Interrupt.

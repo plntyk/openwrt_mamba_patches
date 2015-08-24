@@ -1,0 +1,182 @@
+--- linux-3.2.40.orig/net/bridge/br_fdb.c	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/bridge/br_fdb.c	2013-04-13 23:50:18.000000000 -0700
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/rculist.h>
+ #include <linux/spinlock.h>
+@@ -23,6 +24,7 @@
+ #include <linux/slab.h>
+ #include <linux/atomic.h>
+ #include <asm/unaligned.h>
++#include <linux/mv_nfp.h>
+ #include "br_private.h"
+ 
+ static struct kmem_cache *br_fdb_cache __read_mostly;
+@@ -60,10 +62,21 @@
+ }
+ 
+ static inline int has_expired(const struct net_bridge *br,
+-				  const struct net_bridge_fdb_entry *fdb)
++				struct net_bridge_fdb_entry *fdb)
+ {
+-	return !fdb->is_static &&
+-		time_before_eq(fdb->updated + hold_time(br), jiffies);
++	if (fdb->is_static)
++		return 0;
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if (fdb->nfp) {
++		if (nfp_mgr_p->nfp_hook_fdb_rule_age)
++			if (nfp_mgr_p->nfp_hook_fdb_rule_age(fdb->dst->br->dev->ifindex,
++					fdb->dst->dev->ifindex, fdb->addr.addr) > 0)
++				fdb->updated = jiffies + fdb->dst->br->forward_delay;
++	}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
++	return time_before_eq(fdb->updated + hold_time(br), jiffies);
+ }
+ 
+ static inline int br_mac_hash(const unsigned char *mac)
+@@ -82,6 +95,14 @@
+ 
+ static inline void fdb_delete(struct net_bridge_fdb_entry *f)
+ {
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++	if (f->nfp) {
++		if (nfp_mgr_p->nfp_hook_fdb_rule_del)
++			nfp_mgr_p->nfp_hook_fdb_rule_del(f->dst->br->dev->ifindex,
++					f->dst->dev->ifindex, f->addr.addr);
++	}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 	fdb_notify(f, RTM_DELNEIGH);
+ 	hlist_del_rcu(&f->hlist);
+ 	call_rcu(&f->rcu, fdb_rcu_free);
+@@ -142,6 +163,16 @@
+ 			unsigned long this_timer;
+ 			if (f->is_static)
+ 				continue;
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++			if (f->nfp) {
++				if (nfp_mgr_p->nfp_hook_fdb_rule_age)
++					if (nfp_mgr_p->nfp_hook_fdb_rule_age(f->dst->br->dev->ifindex,
++							f->dst->dev->ifindex, f->addr.addr) > 0)
++					f->updated = jiffies + f->dst->br->forward_delay;
++			}
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
++
+ 			this_timer = f->updated + delay;
+ 			if (time_before_eq(this_timer, jiffies))
+ 				fdb_delete(f);
+@@ -335,7 +366,7 @@
+ 
+ static struct net_bridge_fdb_entry *fdb_create(struct hlist_head *head,
+ 					       struct net_bridge_port *source,
+-					       const unsigned char *addr)
++					       const unsigned char *addr, int is_local)
+ {
+ 	struct net_bridge_fdb_entry *fdb;
+ 
+@@ -343,11 +374,17 @@
+ 	if (fdb) {
+ 		memcpy(fdb->addr.addr, addr, ETH_ALEN);
+ 		fdb->dst = source;
+-		fdb->is_local = 0;
+-		fdb->is_static = 0;
++		fdb->is_local = is_local;
++		fdb->is_static = is_local;
+ 		fdb->updated = fdb->used = jiffies;
+ 		hlist_add_head_rcu(&fdb->hlist, head);
+-		fdb_notify(fdb, RTM_NEWNEIGH);
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++		fdb->nfp = false;
++		if (nfp_mgr_p->nfp_hook_fdb_rule_add)
++			if (!nfp_mgr_p->nfp_hook_fdb_rule_add(fdb->dst->br->dev->ifindex, fdb->dst->dev->ifindex, (u8 *)addr, is_local))
++				fdb->nfp = true;
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */
+ 	}
+ 	return fdb;
+ }
+@@ -374,7 +411,7 @@
+ 		fdb_delete(fdb);
+ 	}
+ 
+-	fdb = fdb_create(head, source, addr);
++	fdb = fdb_create(head, source, addr, 1);
+ 	if (!fdb)
+ 		return -ENOMEM;
+ 
+@@ -425,7 +462,7 @@
+ 	} else {
+ 		spin_lock(&br->hash_lock);
+ 		if (likely(!fdb_find(head, addr)))
+-			fdb_create(head, source, addr);
++			fdb_create(head, source, addr, 0);
+ 
+ 		/* else  we lose race and someone else inserts
+ 		 * it first, don't bother updating
+@@ -440,7 +477,7 @@
+ 		return NUD_PERMANENT;
+ 	else if (fdb->is_static)
+ 		return NUD_NOARP;
+-	else if (has_expired(fdb->dst->br, fdb))
++	else if (has_expired(fdb->dst->br, (struct net_bridge_fdb_entry *)fdb))
+ 		return NUD_STALE;
+ 	else
+ 		return NUD_REACHABLE;
+@@ -569,7 +606,7 @@
+ 		if (!(flags & NLM_F_CREATE))
+ 			return -ENOENT;
+ 
+-		fdb = fdb_create(head, source, addr);
++		fdb = fdb_create(head, source, addr,0);
+ 		if (!fdb)
+ 			return -ENOMEM;
+ 	} else {
+@@ -703,3 +740,40 @@
+ 
+ 	return err;
+ }
++
++#if defined(CONFIG_MV_ETH_NFP_HOOKS)
++void fdb_sync(void)
++{
++	struct net_device *dev;
++	struct net_bridge *br;
++	int i;
++	rtnl_lock();
++	for_each_netdev(&init_net, dev) {
++		if (dev->priv_flags & IFF_EBRIDGE) {
++			br = netdev_priv(dev);
++			spin_lock_bh(&br->hash_lock);
++			for (i = 0; i < BR_HASH_SIZE; i++) {
++				struct net_bridge_fdb_entry *fdb;
++				struct hlist_node *h, *n;
++
++				hlist_for_each_entry_safe(fdb, h, n, &br->hash[i], hlist) {
++					if (nfp_mgr_p->nfp_hook_fdb_rule_add)
++						if (!nfp_mgr_p->nfp_hook_fdb_rule_add(fdb->dst->br->dev->ifindex,
++							       fdb->dst->dev->ifindex,
++							       fdb->addr.addr,
++							       fdb->is_local)) {
++						/* oeprtaion succeeded */
++						fdb->nfp = true;
++					}
++
++				}
++			}
++			spin_unlock_bh(&br->hash_lock);
++
++		}
++	}
++	rtnl_unlock();
++}
++EXPORT_SYMBOL(fdb_sync);
++
++#endif /* CONFIG_MV_ETH_NFP_HOOKS */

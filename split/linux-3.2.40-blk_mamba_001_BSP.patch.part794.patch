@@ -1,0 +1,14 @@
+--- linux-3.2.40.orig/include/mtd/mtd-abi.h	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/include/mtd/mtd-abi.h	2013-04-13 23:50:16.000000000 -0700
+@@ -230,7 +230,11 @@
+  */
+ struct nand_ecclayout_user {
+ 	__u32 eccbytes;
++#ifdef CONFIG_MTD_NAND_NFC
++	__u32 eccpos[128];
++#else
+ 	__u32 eccpos[MTD_MAX_ECCPOS_ENTRIES];
++#endif
+ 	__u32 oobavail;
+ 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
+ };

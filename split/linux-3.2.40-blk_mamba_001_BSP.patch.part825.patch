@@ -1,0 +1,18 @@
+--- linux-3.2.40.orig/net/ipv4/netfilter/Kconfig	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/ipv4/netfilter/Kconfig	2013-04-13 23:50:18.000000000 -0700
+@@ -182,6 +182,15 @@
+ 
+ 	  To compile it as a module, choose M here.  If unsure, say N.
+ 
++config IP_NF_TARGET_NFP
++	tristate "NFP target support"
++	default y
++	depends on NF_CONNTRACK_IPV4 && MV_ETH_NFP_HOOKS
++	help
++	  This target allows to process selected connections in NFP.
++
++	  To compile it as a module, choose M here.  If unsure, say N.
++
+ config IP_NF_TARGET_REDIRECT
+ 	tristate "REDIRECT target support"
+ 	depends on NF_NAT

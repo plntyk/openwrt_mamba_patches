@@ -1,0 +1,16 @@
+--- linux-3.2.40.orig/include/linux/netfilter/xt_layer7.h	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/include/linux/netfilter/xt_layer7.h	2013-04-13 23:50:14.000000000 -0700
+@@ -0,0 +1,13 @@
++#ifndef _XT_LAYER7_H
++#define _XT_LAYER7_H
++
++#define MAX_PATTERN_LEN 8192
++#define MAX_PROTOCOL_LEN 256
++
++struct xt_layer7_info {
++    char protocol[MAX_PROTOCOL_LEN];
++    char pattern[MAX_PATTERN_LEN];
++    u_int8_t invert;
++};
++
++#endif /* _XT_LAYER7_H */

@@ -1,0 +1,10 @@
+--- linux-3.2.40.orig/net/netfilter/Makefile	2013-03-05 19:24:30.000000000 -0800
++++ linux-3.2.40/net/netfilter/Makefile	2013-04-13 23:50:18.000000000 -0700
+@@ -102,6 +102,7 @@
+ obj-$(CONFIG_NETFILTER_XT_MATCH_SCTP) += xt_sctp.o
+ obj-$(CONFIG_NETFILTER_XT_MATCH_SOCKET) += xt_socket.o
+ obj-$(CONFIG_NETFILTER_XT_MATCH_STATE) += xt_state.o
++obj-$(CONFIG_NETFILTER_XT_MATCH_LAYER7) += xt_layer7.o
+ obj-$(CONFIG_NETFILTER_XT_MATCH_STATISTIC) += xt_statistic.o
+ obj-$(CONFIG_NETFILTER_XT_MATCH_STRING) += xt_string.o
+ obj-$(CONFIG_NETFILTER_XT_MATCH_TCPMSS) += xt_tcpmss.o

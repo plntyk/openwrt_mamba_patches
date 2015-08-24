@@ -1,0 +1,13 @@
+--- linux-3.2.40.orig/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/sample/FlowControl/readme.txt	1969-12-31 16:00:00.000000000 -0800
++++ linux-3.2.40/arch/arm/plat-armada/mv_hal/qd-dsdt-3.3/sample/FlowControl/readme.txt	2013-04-13 23:49:38.000000000 -0700
+@@ -0,0 +1,10 @@
++========================================================================
++		Flow Contorl Enable or Disable
++========================================================================
++
++Flow Control Setup requires multiple of DSDT API calls which can be
++examined in this sample.
++
++flowCtrl.c
++	sampleSetFlowControl can be used to enable or disable flow control
++	of the given port
